@@ -2,10 +2,8 @@ import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Transaction } from '@/types/financial';
 import { getCurrentMonth } from '@/utils/calculations';
-import seedData from '@/data/seed/all_months.json';
 
 const STORAGE_KEY = '@life_controller:transactions';
-const SEEDED_KEY = '@life_controller:seeded';
 
 interface FinancialStore {
   transactions: Transaction[];
@@ -18,7 +16,7 @@ interface FinancialStore {
   deleteTransaction: (id: string) => Promise<void>;
   loadTransactions: () => Promise<void>;
   saveTransactions: (transactions: Transaction[]) => Promise<void>;
-  resetToSeedData: () => Promise<void>;
+  importTransactions: (transactions: Transaction[]) => Promise<void>;
   clearAllData: () => Promise<void>;
 }
 
@@ -54,14 +52,6 @@ export const useFinancialStore = create<FinancialStore>((set, get) => ({
 
   loadTransactions: async () => {
     try {
-      const alreadySeeded = await AsyncStorage.getItem(SEEDED_KEY);
-      if (!alreadySeeded) {
-        const seed = seedData as Transaction[];
-        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(seed));
-        await AsyncStorage.setItem(SEEDED_KEY, '1');
-        set({ transactions: seed, currentMonth: getCurrentMonth(), isLoaded: true });
-        return;
-      }
       const stored = await AsyncStorage.getItem(STORAGE_KEY);
       if (stored) {
         set({ transactions: JSON.parse(stored), isLoaded: true });
@@ -77,16 +67,14 @@ export const useFinancialStore = create<FinancialStore>((set, get) => ({
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
   },
 
-  resetToSeedData: async () => {
-    const seed = seedData as Transaction[];
-    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(seed));
-    await AsyncStorage.setItem(SEEDED_KEY, '1');
-    set({ transactions: seed, currentMonth: getCurrentMonth() });
+  importTransactions: async (incoming) => {
+    const withIds = incoming.map((t) => ({ ...t, id: t.id || generateId() }));
+    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(withIds));
+    set({ transactions: withIds, currentMonth: getCurrentMonth() });
   },
 
   clearAllData: async () => {
     await AsyncStorage.removeItem(STORAGE_KEY);
-    await AsyncStorage.removeItem(SEEDED_KEY);
     set({ transactions: [], currentMonth: getCurrentMonth() });
   },
 }));

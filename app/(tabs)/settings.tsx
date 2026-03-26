@@ -1,25 +1,45 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, ScrollView, Share } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as DocumentPicker from 'expo-document-picker';
+import * as FileSystem from 'expo-file-system';
 import { useFinancialStore } from '@/store/financialStore';
 import { formatCurrency } from '@/utils/calculations';
 import { useMonthSummary } from '@/hooks/useMonthSummary';
+import { Transaction } from '@/types/financial';
 
 export default function SettingsScreen() {
-  const { resetToSeedData, clearAllData, transactions } = useFinancialStore();
+  const { importTransactions, clearAllData, transactions } = useFinancialStore();
   const summary = useMonthSummary();
 
   const months = [...new Set(transactions.map((t) => t.month))].sort();
 
-  const handleReset = () => {
-    Alert.alert(
-      'Restaurar dados da planilha',
-      `Isso vai substituir todos os lançamentos pelos dados originais importados da planilha (${transactions.length} registros serão perdidos). Continuar?`,
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        { text: 'Restaurar', style: 'destructive', onPress: resetToSeedData },
-      ]
-    );
+  const handleImport = async () => {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({ type: 'application/json' });
+      if (result.canceled) return;
+      const content = await FileSystem.readAsStringAsync(result.assets[0].uri);
+      const data = JSON.parse(content) as Transaction[];
+      if (!Array.isArray(data)) throw new Error('Formato inválido');
+      Alert.alert(
+        'Importar dados',
+        `${data.length} lançamentos encontrados. Isso substituirá todos os dados atuais.`,
+        [
+          { text: 'Cancelar', style: 'cancel' },
+          { text: 'Importar', onPress: () => importTransactions(data) },
+        ]
+      );
+    } catch {
+      Alert.alert('Erro', 'Arquivo inválido. Use um JSON exportado pelo Life Controller.');
+    }
+  };
+
+  const handleExport = async () => {
+    try {
+      await Share.share({ message: JSON.stringify(transactions, null, 2), title: 'life_controller.json' });
+    } catch {
+      Alert.alert('Erro', 'Não foi possível compartilhar os dados.');
+    }
   };
 
   const handleClear = () => {
@@ -81,12 +101,17 @@ export default function SettingsScreen() {
           </View>
         )}
 
-        {/* Ações */}
+        {/* Dados */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Dados</Text>
-          <TouchableOpacity style={styles.warnBtn} onPress={handleReset}>
-            <Text style={styles.warnBtnText}>↺  Restaurar dados originais da planilha</Text>
+          <TouchableOpacity style={styles.primaryBtn} onPress={handleImport}>
+            <Text style={styles.primaryBtnText}>⬆  Importar JSON</Text>
           </TouchableOpacity>
+          {transactions.length > 0 && (
+            <TouchableOpacity style={styles.secondaryBtn} onPress={handleExport}>
+              <Text style={styles.secondaryBtnText}>⬇  Exportar dados</Text>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity style={[styles.warnBtn, styles.dangerBtn]} onPress={handleClear}>
             <Text style={styles.dangerBtnText}>✕  Apagar todos os lançamentos</Text>
           </TouchableOpacity>
@@ -95,7 +120,7 @@ export default function SettingsScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Sobre</Text>
           <Text style={styles.about}>Life Controller v1.0.0</Text>
-          <Text style={styles.about}>Dados importados de Maio/2025 a Fev/2026</Text>
+          <Text style={styles.about}>Controle financeiro pessoal</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -144,6 +169,22 @@ const styles = StyleSheet.create({
   monthAmounts: { alignItems: 'flex-end' },
   incomeText: { color: '#4ade80', fontSize: 13, fontWeight: '600' },
   expenseText: { color: '#f87171', fontSize: 12 },
+  primaryBtn: {
+    backgroundColor: '#312e81',
+    borderRadius: 8,
+    padding: 14,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  primaryBtnText: { color: '#a5b4fc', fontSize: 14, fontWeight: '600' },
+  secondaryBtn: {
+    backgroundColor: '#064e3b',
+    borderRadius: 8,
+    padding: 14,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  secondaryBtnText: { color: '#6ee7b7', fontSize: 14, fontWeight: '600' },
   warnBtn: {
     backgroundColor: '#78350f',
     borderRadius: 8,
@@ -151,7 +192,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
   },
-  warnBtnText: { color: '#fde68a', fontSize: 14, fontWeight: '600' },
   dangerBtn: { backgroundColor: '#7f1d1d', marginBottom: 0 },
   dangerBtnText: { color: '#fca5a5', fontSize: 14, fontWeight: '600' },
   about: { color: '#6b7280', fontSize: 13, marginBottom: 4 },
