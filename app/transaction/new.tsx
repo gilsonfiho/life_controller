@@ -12,7 +12,6 @@ import {
 import { router } from 'expo-router';
 import { TransactionCategory, TransactionStatus } from '@/types/financial';
 import { useFinancialStore } from '@/store/financialStore';
-import { getCurrentMonth } from '@/utils/calculations';
 import { ALL_CATEGORIES } from '@/constants/categories';
 
 const CATEGORIES = Object.entries(ALL_CATEGORIES) as [TransactionCategory, { label: string }][];
@@ -20,26 +19,27 @@ const CATEGORIES = Object.entries(ALL_CATEGORIES) as [TransactionCategory, { lab
 export default function NewTransactionScreen() {
   const { addTransaction, currentMonth } = useFinancialStore();
 
+  const todayInMonth = `${currentMonth}-${String(new Date().getDate()).padStart(2, '0')}`;
+
   const [description, setDescription] = useState('');
   const [amount, setAmount] = useState('');
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [date, setDate] = useState(todayInMonth);
   const [category, setCategory] = useState<TransactionCategory>('alimentacao');
-  const [subcategory, setSubcategory] = useState('');
-  const [status, setStatus] = useState<TransactionStatus>('pendente');
+  const [status, setStatus] = useState<TransactionStatus>('pago');
 
   const handleSave = async () => {
     if (!description.trim()) return Alert.alert('Erro', 'Informe a descrição.');
     const parsed = parseFloat(amount.replace(',', '.'));
     if (isNaN(parsed) || parsed <= 0) return Alert.alert('Erro', 'Informe um valor válido.');
+    const month = date.slice(0, 7);
 
     await addTransaction({
       description: description.trim(),
       amount: parsed,
       date,
       category,
-      subcategory: subcategory.trim() || undefined,
       status,
-      month: currentMonth,
+      month,
       isRecurring: false,
     });
 
@@ -57,6 +57,7 @@ export default function NewTransactionScreen() {
             onChangeText={setDescription}
             placeholder="Ex: Mercado, Salário, Uber..."
             placeholderTextColor="#6b7280"
+            autoFocus
           />
         </View>
 
@@ -73,12 +74,12 @@ export default function NewTransactionScreen() {
         </View>
 
         <View style={styles.field}>
-          <Text style={styles.label}>Data *</Text>
+          <Text style={styles.label}>Data (AAAA-MM-DD) *</Text>
           <TextInput
             style={styles.input}
             value={date}
             onChangeText={setDate}
-            placeholder="AAAA-MM-DD"
+            placeholder="2025-05-15"
             placeholderTextColor="#6b7280"
           />
         </View>
@@ -98,17 +99,6 @@ export default function NewTransactionScreen() {
               </TouchableOpacity>
             ))}
           </ScrollView>
-        </View>
-
-        <View style={styles.field}>
-          <Text style={styles.label}>Subcategoria</Text>
-          <TextInput
-            style={styles.input}
-            value={subcategory}
-            onChangeText={setSubcategory}
-            placeholder="Opcional"
-            placeholderTextColor="#6b7280"
-          />
         </View>
 
         <View style={styles.field}>

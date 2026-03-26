@@ -13,8 +13,6 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { TransactionCategory, TransactionStatus } from '@/types/financial';
 import { useFinancialStore } from '@/store/financialStore';
 import { ALL_CATEGORIES } from '@/constants/categories';
-import { formatCurrency } from '@/utils/calculations';
-
 const CATEGORIES = Object.entries(ALL_CATEGORIES) as [TransactionCategory, { label: string }][];
 
 export default function EditTransactionScreen() {
@@ -26,8 +24,7 @@ export default function EditTransactionScreen() {
   const [amount, setAmount] = useState(transaction ? String(transaction.amount) : '');
   const [date, setDate] = useState(transaction?.date ?? '');
   const [category, setCategory] = useState<TransactionCategory>(transaction?.category ?? 'alimentacao');
-  const [subcategory, setSubcategory] = useState(transaction?.subcategory ?? '');
-  const [status, setStatus] = useState<TransactionStatus>(transaction?.status ?? 'pendente');
+  const [status, setStatus] = useState<TransactionStatus>(transaction?.status ?? 'pago');
 
   if (!transaction) {
     return (
@@ -47,8 +44,8 @@ export default function EditTransactionScreen() {
       amount: parsed,
       date,
       category,
-      subcategory: subcategory.trim() || undefined,
       status,
+      month: date.slice(0, 7),
     });
 
     router.back();
@@ -93,7 +90,7 @@ export default function EditTransactionScreen() {
         </View>
 
         <View style={styles.field}>
-          <Text style={styles.label}>Data *</Text>
+          <Text style={styles.label}>Data (AAAA-MM-DD) *</Text>
           <TextInput
             style={styles.input}
             value={date}
@@ -117,17 +114,6 @@ export default function EditTransactionScreen() {
               </TouchableOpacity>
             ))}
           </ScrollView>
-        </View>
-
-        <View style={styles.field}>
-          <Text style={styles.label}>Subcategoria</Text>
-          <TextInput
-            style={styles.input}
-            value={subcategory}
-            onChangeText={setSubcategory}
-            placeholder="Opcional"
-            placeholderTextColor="#6b7280"
-          />
         </View>
 
         <View style={styles.field}>
