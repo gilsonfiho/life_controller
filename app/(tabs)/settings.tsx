@@ -3,15 +3,15 @@ import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Alert } from 'r
 import { useFinancialStore } from '@/store/financialStore';
 
 export default function SettingsScreen() {
-  const { seedFromImport, transactions } = useFinancialStore();
+  const { clearAllData, transactions } = useFinancialStore();
 
   const handleReset = () => {
     Alert.alert(
-      'Resetar Dados',
-      'Isso vai apagar todos os lançamentos e carregar os dados de exemplo de Maio/2025. Continuar?',
+      'Apagar Dados',
+      'Isso vai apagar todos os lançamentos. Continuar?',
       [
         { text: 'Cancelar', style: 'cancel' },
-        { text: 'Confirmar', style: 'destructive', onPress: () => seedFromImport() },
+        { text: 'Confirmar', style: 'destructive', onPress: () => clearAllData() },
       ]
     );
   };
@@ -31,7 +31,7 @@ export default function SettingsScreen() {
         </View>
 
         <TouchableOpacity style={styles.dangerBtn} onPress={handleReset}>
-          <Text style={styles.dangerBtnText}>Carregar dados de exemplo (Maio/2025)</Text>
+          <Text style={styles.dangerBtnText}>Apagar todos os dados</Text>
         </TouchableOpacity>
       </View>
 

@@ -2,7 +2,6 @@ import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Transaction, TransactionCategory } from '@/types/financial';
 import { getCurrentMonth } from '@/utils/calculations';
-import seedData from '@/data/seed/may2025.json';
 
 const STORAGE_KEY = '@life_controller:transactions';
 
@@ -23,8 +22,9 @@ interface FinancialStore {
   loadTransactions: () => Promise<void>;
   saveTransactions: (transactions: Transaction[]) => Promise<void>;
 
-  // Seed
-  seedFromImport: () => Promise<void>;
+  // Seed / reset
+  seedFromImport: (transactions: Transaction[]) => Promise<void>;
+  clearAllData: () => Promise<void>;
 }
 
 function generateId(): string {
@@ -63,8 +63,6 @@ export const useFinancialStore = create<FinancialStore>((set, get) => ({
       if (stored) {
         set({ transactions: JSON.parse(stored), isLoaded: true });
       } else {
-        // Primeira vez: carrega seed de Maio/2025
-        await get().seedFromImport();
         set({ isLoaded: true });
       }
     } catch {
@@ -76,13 +74,13 @@ export const useFinancialStore = create<FinancialStore>((set, get) => ({
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
   },
 
-  seedFromImport: async () => {
-    const seeded: Transaction[] = (seedData.transactions as Omit<Transaction, 'id'>[]).map((t) => ({
-      ...t,
-      id: generateId(),
-      month: seedData.month,
-    }));
-    set({ transactions: seeded, currentMonth: seedData.month });
-    await get().saveTransactions(seeded);
+  seedFromImport: async (transactions) => {
+    set({ transactions, currentMonth: transactions[0]?.month ?? getCurrentMonth() });
+    await get().saveTransactions(transactions);
+  },
+
+  clearAllData: async () => {
+    set({ transactions: [], currentMonth: getCurrentMonth() });
+    await AsyncStorage.removeItem(STORAGE_KEY);
   },
 }));
