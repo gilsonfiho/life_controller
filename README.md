@@ -1,16 +1,11 @@
 # Life Controller
 
-<p align="center">
-  <img src="assets/images/logo_main.png" alt="Life Controller Logo" width="480"/>
-</p>
-
-App mobile pessoal para centralizar o gerenciamento do dia a dia. O primeiro módulo — e coração do app — é o **controle financeiro**, substituindo uma planilha Excel com registro manual de lançamentos mensais.
+App mobile pessoal para centralizar o gerenciamento do dia a dia. O primeiro módulo é o **controle financeiro**, substituindo uma planilha Excel com registro manual de lançamentos mensais.
 
 <p align="center">
-  <img src="assets/images/TelaInicial.png" alt="Tela inicial do app" width="280"/>
+  <img src="assets/images/logo_main.png" alt="Life Controller Logo" width="360"/>
 </p>
 
----
 
 ## Controle Financeiro
 
@@ -26,6 +21,7 @@ O módulo financeiro organiza entradas e despesas por mês, com categorias que r
 | Lazer | Saída |
 | Entradas | Entrada |
 
+
 ### Como funciona
 
 - **Navegação por mês** — avance ou recue entre os meses com as setas do painel
@@ -34,8 +30,6 @@ O módulo financeiro organiza entradas e despesas por mês, com categorias que r
 - **CRUD completo** — crie, edite ou exclua qualquer lançamento
 - **Status do lançamento** — marque como pago, pendente ou agendado
 - **Persistência local** — todos os dados ficam no dispositivo, sem servidor
-
----
 
 ## Identidade Visual
 
@@ -50,7 +44,13 @@ O app usa uma paleta de tons escuros com destaque em azul:
 | Success | `#22C55E` | Entradas e saldo positivo |
 | Danger | `#EF4444` | Despesas e saldo negativo |
 
----
+## Tela do APP
+
+<p align="center">
+  <img src="assets/images/TelaInicial.png" alt="Tela inicial do app" width="360"/>
+</p>
+
+--- 
 
 ## Stack
 
@@ -58,8 +58,6 @@ O app usa uma paleta de tons escuros com destaque em azul:
 - **Expo Router 6** — navegação file-based
 - **Zustand** — estado global
 - **AsyncStorage** — persistência local
-
----
 
 ## Como rodar localmente
 
@@ -69,8 +67,6 @@ npx expo start
 ```
 
 Escaneie o QR com o app **Expo Go** (iOS ou Android).
-
----
 
 ## Gerar APK (Android — build local)
 
@@ -86,8 +82,6 @@ cd android && ./gradlew assembleRelease
 ```
 
 O APK será gerado em `android/app/build/outputs/apk/release/app-release.apk`.
-
----
 
 ## Estrutura do projeto
 
@@ -107,8 +101,6 @@ types/                # Interfaces TypeScript
 utils/                # Cálculos de totais e formatação
 constants/            # Categorias, labels e cores
 ```
-
----
 
 ## Dados
 
