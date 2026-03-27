@@ -4,14 +4,14 @@
     "slug": "life-controller",
     "version": "0.1.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/icon_app.png",
     "scheme": "lifecontroller",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/images/splash-icon.png",
+      "image": "./assets/images/splash_screen.png",
       "resizeMode": "contain",
-      "backgroundColor": "#1a1a2e"
+      "backgroundColor": "#0A0F1E"
     },
     "ios": {
       "supportsTablet": false,
@@ -19,8 +19,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#1a1a2e"
+        "foregroundImage": "./assets/images/adaptive_foreground.png",
+        "backgroundColor": "#0A0F1E"
       },
       "package": "com.gilson.lifecontroller"
     },

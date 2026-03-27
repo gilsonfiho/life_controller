@@ -13,11 +13,11 @@ export function MonthNavigator() {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={handlePrev} style={styles.btn}>
-        <Ionicons name="chevron-back" size={22} color="#d1d5db" />
+        <Ionicons name="chevron-back" size={22} color="#FFFFFF" />
       </TouchableOpacity>
       <Text style={styles.label}>{parseMonthLabel(currentMonth)}</Text>
       <TouchableOpacity onPress={handleNext} style={styles.btn}>
-        <Ionicons name="chevron-forward" size={22} color="#d1d5db" />
+        <Ionicons name="chevron-forward" size={22} color="#FFFFFF" />
       </TouchableOpacity>
     </View>
   );
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   label: {
-    color: '#f9fafb',
+    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
     textTransform: 'capitalize',

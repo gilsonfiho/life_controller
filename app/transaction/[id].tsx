@@ -74,7 +74,7 @@ export default function EditTransactionScreen() {
             style={styles.input}
             value={description}
             onChangeText={setDescription}
-            placeholderTextColor="#6b7280"
+            placeholderTextColor="#94A3B8"
           />
         </View>
 
@@ -85,7 +85,7 @@ export default function EditTransactionScreen() {
             value={amount}
             onChangeText={setAmount}
             keyboardType="numeric"
-            placeholderTextColor="#6b7280"
+            placeholderTextColor="#94A3B8"
           />
         </View>
 
@@ -95,7 +95,7 @@ export default function EditTransactionScreen() {
             style={styles.input}
             value={date}
             onChangeText={setDate}
-            placeholderTextColor="#6b7280"
+            placeholderTextColor="#94A3B8"
           />
         </View>
 
@@ -146,16 +146,16 @@ export default function EditTransactionScreen() {
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#0f0f1a' },
+  safe: { flex: 1, backgroundColor: '#0A0F1E' },
   container: { flex: 1, padding: 16 },
-  notFound: { color: '#9ca3af', textAlign: 'center', marginTop: 40 },
+  notFound: { color: '#94A3B8', textAlign: 'center', marginTop: 40 },
   field: { marginBottom: 20 },
-  label: { color: '#9ca3af', fontSize: 13, marginBottom: 6 },
+  label: { color: '#94A3B8', fontSize: 13, marginBottom: 6 },
   input: {
-    backgroundColor: '#1e1e2e',
+    backgroundColor: '#0F1B35',
     borderRadius: 8,
     padding: 12,
-    color: '#f9fafb',
+    color: '#FFFFFF',
     fontSize: 15,
   },
   row: { flexDirection: 'row', gap: 8 },
@@ -163,21 +163,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: '#1e1e2e',
+    backgroundColor: '#0F1B35',
     marginRight: 8,
   },
-  chipActive: { backgroundColor: '#4f46e5' },
-  chipText: { color: '#9ca3af', fontSize: 13 },
-  chipTextActive: { color: '#f9fafb', fontWeight: '600' },
+  chipActive: { backgroundColor: '#3B82F6' },
+  chipText: { color: '#94A3B8', fontSize: 13 },
+  chipTextActive: { color: '#FFFFFF', fontWeight: '600' },
   saveBtn: {
-    backgroundColor: '#4f46e5',
+    backgroundColor: '#3B82F6',
     borderRadius: 10,
     padding: 16,
     alignItems: 'center',
     marginTop: 8,
     marginBottom: 12,
   },
-  saveBtnText: { color: '#f9fafb', fontSize: 16, fontWeight: '700' },
+  saveBtnText: { color: '#FFFFFF', fontSize: 16, fontWeight: '700' },
   deleteBtn: {
     backgroundColor: '#7f1d1d',
     borderRadius: 10,

@@ -19,7 +19,7 @@ export default function TransactionsScreen() {
           style={styles.addBtn}
           onPress={() => router.push('/transaction/new')}
         >
-          <Ionicons name="add" size={24} color="#f9fafb" />
+          <Ionicons name="add" size={24} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
 
@@ -49,7 +49,7 @@ export default function TransactionsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f0f1a',
+    backgroundColor: '#0A0F1E',
   },
   header: {
     flexDirection: 'row',
@@ -60,12 +60,12 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
   },
   title: {
-    color: '#f9fafb',
+    color: '#FFFFFF',
     fontSize: 20,
     fontWeight: '700',
   },
   addBtn: {
-    backgroundColor: '#4f46e5',
+    backgroundColor: '#3B82F6',
     width: 36,
     height: 36,
     borderRadius: 18,
@@ -77,13 +77,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   item: {
-    backgroundColor: '#1e1e2e',
+    backgroundColor: '#0F1B35',
     borderRadius: 10,
     paddingHorizontal: 12,
     marginBottom: 6,
   },
   empty: {
-    color: '#6b7280',
+    color: '#94A3B8',
     textAlign: 'center',
     marginTop: 60,
     fontSize: 15,

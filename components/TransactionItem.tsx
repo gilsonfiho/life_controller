@@ -41,18 +41,18 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 4,
     borderBottomWidth: 1,
-    borderBottomColor: '#1f2937',
+    borderBottomColor: '#1E3A8A',
   },
   left: {
     flex: 1,
     marginRight: 8,
   },
   description: {
-    color: '#f3f4f6',
+    color: '#FFFFFF',
     fontSize: 14,
   },
   date: {
-    color: '#6b7280',
+    color: '#94A3B8',
     fontSize: 12,
     marginTop: 2,
   },
@@ -65,10 +65,10 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   income: {
-    color: '#4ade80',
+    color: '#22C55E',
   },
   expense: {
-    color: '#f87171',
+    color: '#EF4444',
   },
   statusDot: {
     width: 8,
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   paid: {
-    backgroundColor: '#4ade80',
+    backgroundColor: '#22C55E',
   },
   pending: {
     backgroundColor: '#f59e0b',

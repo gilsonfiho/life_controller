@@ -24,7 +24,7 @@ export function CategorySection({ category, transactions }: Props) {
           <Ionicons
             name={(categoryInfo.icon as never) ?? 'ellipse-outline'}
             size={18}
-            color="#9ca3af"
+            color="#94A3B8"
             style={styles.icon}
           />
           <Text style={styles.title}>{categoryInfo.label}</Text>
@@ -32,7 +32,7 @@ export function CategorySection({ category, transactions }: Props) {
         </View>
         <View style={styles.headerRight}>
           <Text style={styles.total}>{formatCurrency(total)}</Text>
-          <Ionicons name={expanded ? 'chevron-up' : 'chevron-down'} size={16} color="#6b7280" />
+          <Ionicons name={expanded ? 'chevron-up' : 'chevron-down'} size={16} color="#94A3B8" />
         </View>
       </TouchableOpacity>
 
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   container: {
     marginHorizontal: 16,
     marginBottom: 12,
-    backgroundColor: '#1e1e2e',
+    backgroundColor: '#0F1B35',
     borderRadius: 12,
     overflow: 'hidden',
   },
@@ -73,12 +73,12 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   title: {
-    color: '#e5e7eb',
+    color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '600',
   },
   count: {
-    color: '#6b7280',
+    color: '#94A3B8',
     fontSize: 12,
     marginLeft: 4,
   },
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   total: {
-    color: '#d1d5db',
+    color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '500',
   },
