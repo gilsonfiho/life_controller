@@ -35,7 +35,7 @@ export function MonthSummaryCard({ summary }: Props) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#1e1e2e',
+    backgroundColor: '#0F1B35',
     borderRadius: 16,
     padding: 20,
     marginHorizontal: 16,
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   label: {
-    color: '#9ca3af',
+    color: '#94A3B8',
     fontSize: 13,
     marginBottom: 4,
   },
@@ -59,14 +59,14 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   income: {
-    color: '#4ade80',
+    color: '#22C55E',
   },
   expense: {
-    color: '#f87171',
+    color: '#EF4444',
   },
   divider: {
     height: 1,
-    backgroundColor: '#374151',
+    backgroundColor: '#1E3A8A',
     marginVertical: 16,
   },
   balanceRow: {
@@ -75,16 +75,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   balanceLabel: {
-    color: '#d1d5db',
+    color: '#FFFFFF',
     fontSize: 15,
     fontWeight: '500',
   },
   balanceValue: {
     fontSize: 22,
     fontWeight: '700',
-    color: '#4ade80',
+    color: '#22C55E',
   },
   negative: {
-    color: '#f87171',
+    color: '#EF4444',
   },
 });

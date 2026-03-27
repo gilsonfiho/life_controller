@@ -32,7 +32,7 @@ export default function DashboardScreen() {
           style={styles.addBtn}
           onPress={() => router.push('/transaction/new')}
         >
-          <Ionicons name="add" size={24} color="#f9fafb" />
+          <Ionicons name="add" size={24} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
 
@@ -51,10 +51,10 @@ export default function DashboardScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0f0f1a',
+    backgroundColor: '#0A0F1E',
   },
   loading: {
-    color: '#9ca3af',
+    color: '#94A3B8',
     textAlign: 'center',
     marginTop: 40,
     fontSize: 16,
@@ -68,12 +68,12 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
   },
   title: {
-    color: '#f9fafb',
+    color: '#FFFFFF',
     fontSize: 20,
     fontWeight: '700',
   },
   addBtn: {
-    backgroundColor: '#4f46e5',
+    backgroundColor: '#3B82F6',
     width: 36,
     height: 36,
     borderRadius: 18,
