@@ -15,6 +15,7 @@ import { MonthNavigator } from '@/components/MonthNavigator';
 import { TransactionItem } from '@/components/TransactionItem';
 import { useTransactions } from '@/hooks/useTransactions';
 import { ALL_CATEGORIES } from '@/constants/categories';
+import { formatCurrency } from '@/utils/calculations';
 import { TransactionCategory, TransactionStatus } from '@/types/financial';
 
 const STATUS_OPTIONS: Array<{ key: TransactionStatus | 'all'; label: string }> = [
@@ -46,6 +47,26 @@ export default function TransactionsScreen() {
     }),
     [allMonthTransactions]
   );
+
+  const categoryStats = useMemo(() => {
+    const totals: Record<string, { count: number; total: number }> = {
+      all: { count: 0, total: 0 },
+    };
+
+    for (const transaction of allMonthTransactions) {
+      totals.all.count += 1;
+      totals.all.total += transaction.amount;
+
+      if (!totals[transaction.category]) {
+        totals[transaction.category] = { count: 0, total: 0 };
+      }
+
+      totals[transaction.category].count += 1;
+      totals[transaction.category].total += transaction.amount;
+    }
+
+    return totals;
+  }, [allMonthTransactions]);
 
   const { monthTransactions } = useTransactions(
     undefined,
@@ -117,6 +138,9 @@ export default function TransactionsScreen() {
               ]}
             >
               {option.label}
+            </Text>
+            <Text style={styles.categoryValue}>
+              {categoryStats[option.key]?.count ?? 0} lançamentos · {formatCurrency(categoryStats[option.key]?.total ?? 0)}
             </Text>
           </TouchableOpacity>
         ))}
@@ -256,6 +280,11 @@ const styles = StyleSheet.create({
   },
   categoryTextActive: {
     color: '#FFFFFF',
+  },
+  categoryValue: {
+    color: '#94A3B8',
+    fontSize: 11,
+    marginTop: 4,
   },
   filterRow: {
     flexDirection: 'row',
