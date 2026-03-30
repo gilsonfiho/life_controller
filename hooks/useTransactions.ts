@@ -1,15 +1,30 @@
 import { useMemo } from 'react';
 import { useFinancialStore } from '@/store/financialStore';
-import { Transaction, TransactionCategory } from '@/types/financial';
+import { Transaction, TransactionCategory, TransactionStatus } from '@/types/financial';
 import { EXPENSE_CATEGORY_KEYS } from '@/constants/categories';
 
-export function useTransactions(month?: string) {
+export function useTransactions(
+  month?: string,
+  status?: TransactionStatus,
+  category?: TransactionCategory,
+  search?: string
+) {
   const { transactions, currentMonth } = useFinancialStore();
   const targetMonth = month ?? currentMonth;
+  const normalizedSearch = search?.trim().toLowerCase();
 
   const monthTransactions = useMemo(
-    () => transactions.filter((t) => t.month === targetMonth),
-    [transactions, targetMonth]
+    () =>
+      transactions.filter((t) => {
+        const matchesMonth = t.month === targetMonth;
+        const matchesStatus = status === undefined || t.status === status;
+        const matchesCategory = category === undefined || t.category === category;
+        const matchesSearch =
+          !normalizedSearch ||
+          t.description.toLowerCase().includes(normalizedSearch);
+        return matchesMonth && matchesStatus && matchesCategory && matchesSearch;
+      }),
+    [transactions, targetMonth, status, category, normalizedSearch]
   );
 
   const byCategory = useMemo(() => {
