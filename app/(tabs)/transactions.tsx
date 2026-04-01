@@ -14,9 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { MonthNavigator } from '@/components/MonthNavigator';
 import { TransactionItem } from '@/components/TransactionItem';
 import { useTransactions } from '@/hooks/useTransactions';
-import { ALL_CATEGORIES } from '@/constants/categories';
-import { formatCurrency } from '@/utils/calculations';
-import { TransactionCategory, TransactionStatus } from '@/types/financial';
+import { TransactionStatus } from '@/types/financial';
 
 const STATUS_OPTIONS: Array<{ key: TransactionStatus | 'all'; label: string }> = [
   { key: 'all', label: 'Todos' },
@@ -25,17 +23,8 @@ const STATUS_OPTIONS: Array<{ key: TransactionStatus | 'all'; label: string }> =
   { key: 'agendado', label: 'Agendado' },
 ];
 
-const CATEGORY_OPTIONS: Array<{ key: TransactionCategory | 'all'; label: string }> = [
-  { key: 'all', label: 'Todas' },
-  ...Object.entries(ALL_CATEGORIES).map(([key, category]) => ({
-    key: key as TransactionCategory,
-    label: category.label,
-  })),
-];
-
 export default function TransactionsScreen() {
   const [statusFilter, setStatusFilter] = useState<TransactionStatus | 'all'>('all');
-  const [categoryFilter, setCategoryFilter] = useState<TransactionCategory | 'all'>('all');
   const [searchTerm, setSearchTerm] = useState('');
 
   const { monthTransactions: allMonthTransactions } = useTransactions();
@@ -48,30 +37,10 @@ export default function TransactionsScreen() {
     [allMonthTransactions]
   );
 
-  const categoryStats = useMemo(() => {
-    const totals: Record<string, { count: number; total: number }> = {
-      all: { count: 0, total: 0 },
-    };
-
-    for (const transaction of allMonthTransactions) {
-      totals.all.count += 1;
-      totals.all.total += transaction.amount;
-
-      if (!totals[transaction.category]) {
-        totals[transaction.category] = { count: 0, total: 0 };
-      }
-
-      totals[transaction.category].count += 1;
-      totals[transaction.category].total += transaction.amount;
-    }
-
-    return totals;
-  }, [allMonthTransactions]);
-
   const { monthTransactions } = useTransactions(
     undefined,
     statusFilter === 'all' ? undefined : statusFilter,
-    categoryFilter === 'all' ? undefined : categoryFilter,
+    undefined,
     searchTerm
   );
 
@@ -116,35 +85,6 @@ export default function TransactionsScreen() {
         placeholder="Buscar por descrição"
         placeholderTextColor="#94A3B8"
       />
-
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.categoryRow}
-      >
-        {CATEGORY_OPTIONS.map((option) => (
-          <TouchableOpacity
-            key={option.key}
-            style={[
-              styles.categoryChip,
-              categoryFilter === option.key && styles.categoryChipActive,
-            ]}
-            onPress={() => setCategoryFilter(option.key)}
-          >
-            <Text
-              style={[
-                styles.categoryText,
-                categoryFilter === option.key && styles.categoryTextActive,
-              ]}
-            >
-              {option.label}
-            </Text>
-            <Text style={styles.categoryValue}>
-              {categoryStats[option.key]?.count ?? 0} lançamentos · {formatCurrency(categoryStats[option.key]?.total ?? 0)}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
 
       <View style={styles.filterRow}>
         {STATUS_OPTIONS.map((option) => (
@@ -255,36 +195,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: '#0F1B35',
     color: '#FFFFFF',
-  },
-  categoryRow: {
-    paddingHorizontal: 16,
-    paddingBottom: 8,
-  },
-  categoryChip: {
-    paddingVertical: 9,
-    paddingHorizontal: 14,
-    backgroundColor: '#0F1B35',
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#1E3A8A',
-    marginRight: 8,
-  },
-  categoryChipActive: {
-    backgroundColor: '#3B82F6',
-    borderColor: '#60A5FA',
-  },
-  categoryText: {
-    color: '#94A3B8',
-    fontSize: 13,
-    fontWeight: '600',
-  },
-  categoryTextActive: {
-    color: '#FFFFFF',
-  },
-  categoryValue: {
-    color: '#94A3B8',
-    fontSize: 11,
-    marginTop: 4,
   },
   filterRow: {
     flexDirection: 'row',
