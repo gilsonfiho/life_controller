@@ -83,6 +83,12 @@ cd android && ./gradlew assembleRelease
 
 O APK será gerado em `android/app/build/outputs/apk/release/app-release.apk`.
 
+## 🔒 Segurança e Privacidade
+
+**Seus dados financeiros estão salvos localmente no seu dispositivo.** Nenhum dado é enviado para servidores.
+
+⚠️ **Importante:** Os dados podem ser restaurados após desinstalar o app em alguns casos (backup automático do Android/iCloud). Antes de vender ou devolver o celular, use o botão **"🔒 Limpar"** nas Configurações.
+
 ## Estrutura do projeto
 
 ```
