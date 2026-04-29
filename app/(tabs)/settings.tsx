@@ -2,11 +2,24 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert, ScrollView, Share } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as DocumentPicker from 'expo-document-picker';
-import * as FileSystem from 'expo-file-system';
 import { useFinancialStore } from '@/store/financialStore';
-import { formatCurrency } from '@/utils/calculations';
+import { formatCurrency, getCurrentMonth } from '@/utils/calculations';
 import { useMonthSummary } from '@/hooks/useMonthSummary';
 import { Transaction } from '@/types/financial';
+
+function normalizeTransaction(t: any): Transaction {
+  return {
+    id: String(t.id || `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`),
+    description: String(t.description || ''),
+    amount: Number(t.amount) || 0,
+    date: String(t.date || ''),
+    category: t.category || 'despesa_avulsa',
+    status: t.status || 'pago',
+    month: String(t.month || getCurrentMonth()),
+    isRecurring: Boolean(t.isRecurring),
+    subcategory: t.subcategory ? String(t.subcategory) : undefined,
+  };
+}
 
 export default function SettingsScreen() {
   const { importTransactions, clearAllData, transactions } = useFinancialStore();
@@ -16,39 +29,101 @@ export default function SettingsScreen() {
 
   const handleImport = async () => {
     try {
-      const result = await DocumentPicker.getDocumentAsync({ type: 'application/json' });
+      const result = await DocumentPicker.getDocumentAsync({ 
+        type: 'application/json'
+      });
+      
       if (result.canceled) return;
-      const content = await FileSystem.readAsStringAsync(result.assets[0].uri);
-      const data = JSON.parse(content) as Transaction[];
-      if (!Array.isArray(data)) throw new Error('Formato inválido');
+      
+      const file = result.assets[0];
+      if (!file || !file.uri) {
+        throw new Error('Arquivo inválido');
+      }
+      
+      // Ler arquivo usando fetch como alternativa
+      const response = await fetch(file.uri);
+      if (!response.ok) {
+        throw new Error('Erro ao ler arquivo');
+      }
+      
+      const content = await response.text();
+      const parsed = JSON.parse(content);
+      
+      if (!Array.isArray(parsed)) {
+        throw new Error('Arquivo deve ser um array de transações');
+      }
+      
+      if (parsed.length === 0) {
+        throw new Error('Arquivo vazio');
+      }
+      
+      const txs = parsed.map((t: any) => normalizeTransaction(t));
+      
       Alert.alert(
         'Importar dados',
-        `${data.length} lançamentos encontrados. Isso substituirá todos os dados atuais.`,
+        `${txs.length} lançamentos encontrados.\nIsso substituirá todos os dados atuais.`,
         [
           { text: 'Cancelar', style: 'cancel' },
-          { text: 'Importar', onPress: () => importTransactions(data) },
+          { 
+            text: 'Importar',
+            onPress: async () => {
+              await importTransactions(txs);
+              Alert.alert('✓ Sucesso', `${txs.length} lançamentos importados!`);
+            }
+          },
         ]
       );
-    } catch {
-      Alert.alert('Erro', 'Arquivo inválido. Use um JSON exportado pelo Life Controller.');
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : 'Erro desconhecido';
+      Alert.alert('Erro ao importar', msg);
     }
   };
 
   const handleExport = async () => {
     try {
-      await Share.share({ message: JSON.stringify(transactions, null, 2), title: 'life_controller.json' });
-    } catch {
-      Alert.alert('Erro', 'Não foi possível compartilhar os dados.');
+      if (transactions.length === 0) {
+        Alert.alert('Aviso', 'Não há dados para exportar');
+        return;
+      }
+      
+      // Exportar de forma assíncrona em chunks se houver muitos dados
+      const jsonData = JSON.stringify(transactions, null, 2);
+      
+      // Mostrar alerta antes de compartilhar
+      Alert.alert(
+        'Exportar dados',
+        `${transactions.length} lançamentos serão exportados.`,
+        [
+          { text: 'Cancelar', style: 'cancel' },
+          {
+            text: 'Exportar',
+            onPress: async () => {
+              try {
+                await Share.share({
+                  message: jsonData,
+                  title: 'life_controller.json',
+                });
+              } catch (e) {
+                if (!(e instanceof Error && e.message.includes('User did not share'))) {
+                  Alert.alert('Erro', 'Falha ao exportar dados');
+                }
+              }
+            }
+          }
+        ]
+      );
+    } catch (error) {
+      Alert.alert('Erro', 'Erro ao preparar exportação');
     }
   };
 
   const handleClear = () => {
     Alert.alert(
-      'Apagar tudo',
+      'Apagar dados',
       'Remove TODOS os lançamentos sem possibilidade de recuperação.',
       [
         { text: 'Cancelar', style: 'cancel' },
-        { text: 'Apagar tudo', style: 'destructive', onPress: clearAllData },
+        { text: 'Apagar', style: 'destructive', onPress: clearAllData },
       ]
     );
   };
